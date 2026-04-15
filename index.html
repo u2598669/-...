@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منصة الكتب - BookStore</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <span class="logo">📚 BookStore</span>
+      </div>
+      <ul class="navbar-menu">
+        <li><a href="#" onclick="showSection('home')">الرئيسية</a></li>
+        <li><a href="#" onclick="showSection('books')">الكتب</a></li>
+        <li><a href="#" onclick="showSection('cart')">السلة <span id="cart-count" class="cart-badge">0</span></a></li>
+        <li><a href="#" onclick="showSection('profile')">حسابي</a></li>
+      </ul>
+      <button class="logout-btn" onclick="logout()" id="logout-btn" style="display: none;">تسجيل الخروج</button>
+      <button class="login-btn" onclick="showLoginModal()" id="login-btn">تسجيل الدخول</button>
+    </div>
+  </nav>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h2>تسجيل الدخول</h2>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="اسم المستخدم" required />
+        <input type="password" id="password" placeholder="كلمة المرور" required />
+        <button type="submit" class="btn btn-primary">دخول</button>
+      </form>
+      <p>ليس لديك حساب؟ <a href="#" onclick="toggleRegisterForm()">إنشاء حساب جديد</a></p>
+      <form id="registerForm" style="display: none;">
+        <h3>إنشاء حساب جديد</h3>
+        <input type="text" id="newUsername" placeholder="اسم المستخدم" required />
+        <input type="email" id="newEmail" placeholder="البريد الإلكتروني" required />
+        <input type="password" id="newPassword" placeholder="كلمة المرور" required />
+        <button type="submit" class="btn btn-primary">إنشاء حساب</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sections -->
+  <main class="main-content">
+    <!-- Home Section -->
+    <section id="home" class="section active">
+      <div class="hero">
+        <div class="hero-content">
+          <h1>مرحباً بك في منصة الكتب</h1>
+          <p>اكتشف آلاف الكتب المختلفة بأفضل الأسعار</p>
+          <button class="btn btn-primary btn-lg" onclick="showSection('books')">تصفح الكتب الآن</button>
+        </div>
+      </div>
+
+      <section class="featured-books">
+        <h2>الكتب الموصى بها</h2>
+        <div id="featured-container" class="books-grid"></div>
+      </section>
+    </section>
+
+    <!-- Books Section -->
+    <section id="books" class="section">
+      <div class="books-header">
+        <h2>كل الكتب</h2>
+        <div class="search-filter">
+          <input type="text" id="searchInput" placeholder="ابحث عن كتاب..." onkeyup="filterBooks()" />
+          <select id="categoryFilter" onchange="filterBooks()">
+            <option value="">جميع الفئات</option>
+            <option value="fiction">روايات</option>
+            <option value="science">العلوم</option>
+            <option value="history">التاريخ</option>
+            <option value="psychology">علم النفس</option>
+            <option value="education">التعليم</option>
+          </select>
+          <select id="sortFilter" onchange="sortBooks()">
+            <option value="name">ترتيب بالاسم</option>
+            <option value="price-low">السعر: من الأقل للأعلى</option>
+            <option value="price-high">السعر: من الأعلى للأقل</option>
+            <option value="rating">الأعلى تقييماً</option>
+          </select>
+        </div>
+      </div>
+      <div id="books-container" class="books-grid"></div>
+    </section>
+
+    <!-- Shopping Cart Section -->
+    <section id="cart" class="section">
+      <h2>سلة التسوق</h2>
+      <div id="cart-container" class="cart-container">
+        <div id="empty-cart" class="empty-message">سلتك فارغة</div>
+        <div id="cart-items"></div>
+        <div id="cart-summary" style="display: none;">
+          <div class="cart-totals">
+            <p><strong>المجموع الجزئي:</strong> <span id="subtotal">0</span> ريال</p>
+            <p><strong>الضريبة:</strong> <span id="tax">0</span> ريال</p>
+            <p class="total"><strong>المجموع النهائي:</strong> <span id="total">0</span> ريال</p>
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="checkout()">متابعة الشراء</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section">
+      <div id="profile-login-message" class="info-message">
+        يرجى تسجيل الدخول لعرض ملفك الشخصي
+      </div>
+      <div id="profile-content" style="display: none;">
+        <h2>ملفك الشخصي</h2>
+        <div class="profile-info">
+          <p><strong>المستخدم:</strong> <span id="profile-username"></span></p>
+          <p><strong>البريد الإلكتروني:</strong> <span id="profile-email"></span></p>
+        </div>
+        <h3>طلباتك السابقة</h3>
+        <div id="orders-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>عن المتجر</h4>
+        <p>منصة الكتب الموثوقة لشراء أفضل الكتب بأسعار مناسبة</p>
+      </div>
+      <div class="footer-section">
+        <h4>روابط سريعة</h4>
+        <ul>
+          <li><a href="#">سياسة الخصوصية</a></li>
+          <li><a href="#">شروط الاستخدام</a></li>
+          <li><a href="#">اتصل بنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>تواصل معنا</h4>
+        <p>البريد: info@bookstore.com</p>
+        <p>الهاتف: +966 50 000 0000</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 منصة الكتب. جميع الحقوق محفوظة لدي المهندس محمد الحسني</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
