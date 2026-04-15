@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منصة الكتب - BookStore</title>
+  <style>
+    /* Global Styles */
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #1e40af;
+      --success-color: #10b981;
+      --danger-color: #ef4444;
+      --warning-color: #f59e0b;
+      --light-gray: #f3f4f6;
+      --border-color: #e5e7eb;
+      --text-dark: #1f2937;
+      --text-light: #6b7280;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #ffffff;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .navbar-menu {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+      flex: 1;
+      margin: 0 2rem;
+    }
+
+    .navbar-menu a {
+      color: white;
+      text-decoration: none;
+      transition: opacity 0.3s;
+      cursor: pointer;
+    }
+
+    .navbar-menu a:hover {
+      opacity: 0.8;
+    }
+
+    .cart-badge {
+      background-color: var(--danger-color);
+      color: white;
+      border-radius: 50%;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+    }
+
+    .login-btn,
+    .logout-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .login-btn {
+      background-color: white;
+      color: var(--primary-color);
+    }
+
+    .login-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .logout-btn {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .logout-btn:hover {
+      background-color: #dc2626;
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      min-height: calc(100vh - 300px);
+    }
+
+    .section {
+      display: none;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 4rem 2rem;
+      border-radius: 1rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .hero-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-content p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      opacity: 0.9;
+    }
+
+    /* Books Grid */
+    .books-header {
+      margin-bottom: 2rem;
+    }
+
+    .books-header h2 {
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+
+    .search-filter {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-filter input,
+    .search-filter select {
+      padding: 0.7rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .search-filter input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    /* Book Card */
+    .book-card {
+      background: white;
+      border: 1px solid var(--border-color);
+      border-radius: 0.8rem;
+      overflow: hidden;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .book-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .book-cover {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+    }
+
+    .book-info {
+      padding: 1.5rem;
+    }
+
+    .book-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--text-dark);
+    }
+
+    .book-author {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .book-category {
+      display: inline-block;
+      background-color: var(--light-gray);
+      color: var(--primary-color);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .book-rating {
+      color: #f59e0b;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .book-price {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .book-description {
+      color: var(--text-light);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+    }
+
+    .book-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      padding: 0.7rem 1.2rem;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .btn-secondary {
+      background-color: var(--light-gray);
+      color: var(--text-dark);
+      flex: 1;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--border-color);
+    }
+
+    .btn-lg {
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      width: 100%;
+    }
+
+    /* Featured Books */
+    .featured-books {
+      margin-top: 3rem;
+    }
+
+    .featured-books h2 {
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+    }
+
+    /* Cart */
+    .cart-container {
+      background: var(--light-gray);
+      padding: 2rem;
+      border-radius: 0.8rem;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+
+    .cart-item {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid var(--primary-color);
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-price {
+      color: var(--primary-color);
+      font-weight: bold;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .quantity-input {
+      width: 60px;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.3rem;
+      text-align: center;
+    }
+
+    .remove-btn {
+      background-color: var(--danger-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .remove-btn:hover {
+      background-color: #dc2626;
+    }
+
+    .cart-totals {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-top: 2rem;
+      border-top: 2px solid var(--border-color);
+    }
+
+    .cart-totals p {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      font-size: 1.05rem;
+    }
+
+    .cart-totals .total {
+      font-size: 1.3rem;
+      color: var(--primary-color);
+      border-top: 1px solid var(--border-color);
+      padding-top: 0.8rem;
+      margin-top: 0.8rem;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 200;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 0.8rem;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .close {
+      color: #aaa;
+      float: left;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .close:hover {
+      color: black;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 1.5rem;
+      color: var(--text-dark);
+    }
+
+    .modal-content form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .modal-content input {
+      padding: 0.8rem;
+      border: 1px solid var(--border-color);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .modal-content p {
+      margin-top: 1rem;
+      color: var(--text-light);
+    }
+
+    .modal-content a {
+      color: var(--primary-color);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Profile */
+    .profile-info {
+      background: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .profile-info p {
+      margin-bottom: 0.8rem;
+      font-size: 1.05rem;
+    }
+
+    .info-message {
+      background: #dbeafe;
+      color: #1e40af;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      text-align: center;
+    }
+
+    #orders-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .order-item {
+      background: var(--light-gray);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--success-color);
+    }
+
+    /* Footer */
+    .footer {
+      background-color: var(--text-dark);
+      color: white;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h4 {
+      margin-bottom: 1rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-section a {
+      color: #d1d5db;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .footer-section a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      border-top: 1px solid #374151;
+      padding-top: 1.5rem;
+      color: #d1d5db;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .navbar-menu {
+        display: none;
+      }
+
+      .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      }
+
+      .hero-content h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero-content p {
+        font-size: 1rem;
+      }
+
+      .search-filter {
+        flex-direction: column;
+      }
+
+      .search-filter input,
+      .search-filter select {
+        width: 100%;
+      }
+
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .cart-item-actions {
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .modal-content {
+        width: 95%;
+        margin: 20% auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <span class="logo">📚 BookStore</span>
+      </div>
+      <ul class="navbar-menu">
+        <li><a onclick="showSection('home')">الرئيسية</a></li>
+        <li><a onclick="showSection('books')">الكتب</a></li>
+        <li><a onclick="showSection('cart')">السلة <span id="cart-count" class="cart-badge">0</span></a></li>
+        <li><a onclick="showSection('profile')">حسابي</a></li>
+      </ul>
+      <button class="logout-btn" onclick="logout()" id="logout-btn" style="display: none;">تسجيل الخروج</button>
+      <button class="login-btn" onclick="showLoginModal()" id="login-btn">تسجيل الدخول</button>
+    </div>
+  </nav>
+
+  <!-- Login Modal -->
+  <div id="loginModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeLoginModal()">&times;</span>
+      <h2>تسجيل الدخول</h2>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="اسم المستخدم" required />
+        <input type="password" id="password" placeholder="كلمة المرور" required />
+        <button type="submit" class="btn btn-primary">دخول</button>
+      </form>
+      <p>ليس لديك حساب؟ <a onclick="toggleRegisterForm()">إنشاء حساب جديد</a></p>
+      <form id="registerForm" style="display: none;">
+        <h3>إنشاء حساب جديد</h3>
+        <input type="text" id="newUsername" placeholder="اسم المستخدم" required />
+        <input type="email" id="newEmail" placeholder="البريد الإلكتروني" required />
+        <input type="password" id="newPassword" placeholder="كلمة المرور" required />
+        <button type="submit" class="btn btn-primary">إنشاء حساب</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sections -->
+  <main class="main-content">
+    <!-- Home Section -->
+    <section id="home" class="section active">
+      <div class="hero">
+        <div class="hero-content">
+          <h1>مرحباً بك في منصة الكتب</h1>
+          <p>اكتشف آلاف الكتب المختلفة بأفضل الأسعار</p>
+          <button class="btn btn-primary btn-lg" onclick="showSection('books')">تصفح الكتب الآن</button>
+        </div>
+      </div>
+
+      <section class="featured-books">
+        <h2>الكتب الموصى بها</h2>
+        <div id="featured-container" class="books-grid"></div>
+      </section>
+    </section>
+
+    <!-- Books Section -->
+    <section id="books" class="section">
+      <div class="books-header">
+        <h2>كل الكتب</h2>
+        <div class="search-filter">
+          <input type="text" id="searchInput" placeholder="ابحث عن كتاب..." onkeyup="filterBooks()" />
+          <select id="categoryFilter" onchange="filterBooks()">
+            <option value="">جميع الفئات</option>
+            <option value="fiction">روايات</option>
+            <option value="science">العلوم</option>
+            <option value="history">التاريخ</option>
+            <option value="psychology">علم النفس</option>
+            <option value="education">التعليم</option>
+          </select>
+          <select id="sortFilter" onchange="sortBooks()">
+            <option value="name">ترتيب بالاسم</option>
+            <option value="price-low">السعر: من الأقل للأعلى</option>
+            <option value="price-high">السعر: من الأعلى للأقل</option>
+            <option value="rating">الأعلى تقييماً</option>
+          </select>
+        </div>
+      </div>
+      <div id="books-container" class="books-grid"></div>
+    </section>
+
+    <!-- Shopping Cart Section -->
+    <section id="cart" class="section">
+      <h2>سلة التسوق</h2>
+      <div id="cart-container" class="cart-container">
+        <div id="empty-cart" class="empty-message">سلتك فارغة</div>
+        <div id="cart-items"></div>
+        <div id="cart-summary" style="display: none;">
+          <div class="cart-totals">
+            <p><strong>المجموع الجزئي:</strong> <span id="subtotal">0</span> ريال</p>
+            <p><strong>الضريبة:</strong> <span id="tax">0</span> ريال</p>
+            <p class="total"><strong>المجموع النهائي:</strong> <span id="total">0</span> ريال</p>
+          </div>
+          <button class="btn btn-primary btn-lg" onclick="checkout()">متابعة الشراء</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile Section -->
+    <section id="profile" class="section">
+      <div id="profile-login-message" class="info-message">
+        يرجى تسجيل الدخول لعرض ملفك الشخصي
+      </div>
+      <div id="profile-content" style="display: none;">
+        <h2>ملفك الشخصي</h2>
+        <div class="profile-info">
+          <p><strong>المستخدم:</strong> <span id="profile-username"></span></p>
+          <p><strong>البريد الإلكتروني:</strong> <span id="profile-email"></span></p>
+        </div>
+        <h3>طلباتك السابقة</h3>
+        <div id="orders-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>عن المتجر</h4>
+        <p>منصة الكتب الموثوقة لشراء أفضل الكتب بأسعار مناسبة</p>
+      </div>
+      <div class="footer-section">
+        <h4>روابط سريعة</h4>
+        <ul>
+          <li><a href="#">سياسة الخصوصية</a></li>
+          <li><a href="#">شروط الاستخدام</a></li>
+          <li><a href="#">اتصل بنا</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>تواصل معنا</h4>
+        <p>البريد: info@bookstore.com</p>
+        <p>الهاتف: +966 50 000 0000</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 منصة الكتب. جميع الحقوق محفوظة لدي المهندس محمد الحسني</p>
+    </div>
+  </footer>
+
+  <script>
+    // Books Database
+    const booksDatabase = [
+      {
+        id: 1,
+        title: "رحلة إلى مركز الأرض",
+        author: "جول فيرن",
+        category: "fiction",
+        price: 45.99,
+        rating: 4.5,
+        reviews: 120,
+        description: "رواية مثيرة عن رحلة تحت الأرض",
+        emoji: "🌍"
+      },
+      {
+        id: 2,
+        title: "الأصل والتطور",
+        author: "تشارلز داروين",
+        category: "science",
+        price: 55.99,
+        rating: 4.8,
+        reviews: 89,
+        description: "كتاب علمي عن نظرية التطور",
+        emoji: "🧬"
+      },
+      {
+        id: 3,
+        title: "الحرب والسلام",
+        author: "تولستوي",
+        category: "fiction",
+        price: 65.99,
+        rating: 4.6,
+        reviews: 156,
+        description: "أشهر رواية روسية في التاريخ",
+        emoji: "⚔️"
+      },
+      {
+        id: 4,
+        title: "تاريخ الحضارات",
+        author: "أرنولد توينبي",
+        category: "history",
+        price: 52.99,
+        rating: 4.3,
+        reviews: 67,
+        description: "دراسة شاملة لتاريخ الحضارات الإنسانية",
+        emoji: "🏛️"
+      },
+      {
+        id: 5,
+        title: "علم النفس والسلوك",
+        author: "ألبرت إليس",
+        category: "psychology",
+        price: 48.99,
+        rating: 4.4,
+        reviews: 95,
+        description: "مقدمة شاملة لعلم النفس الحديث",
+        emoji: "🧠"
+      },
+      {
+        id: 6,
+        title: "طرق التعلم الفعال",
+        author: "باربارا أوكلي",
+        category: "education",
+        price: 42.99,
+        rating: 4.7,
+        reviews: 203,
+        description: "كتاب عملي عن استراتيجيات التعلم",
+        emoji: "📚"
+      },
+      {
+        id: 7,
+        title: "الكود النظيف",
+        author: "روبرت مارتن",
+        category: "education",
+        price: 59.99,
+        rating: 4.8,
+        reviews: 341,
+        description: "دليل كتابة الكود الاحترافي",
+        emoji: "💻"
+      },
+      {
+        id: 8,
+        title: "عجائب الطبيعة",
+        author: "ديفيد أتينبورو",
+        category: "science",
+        price: 51.99,
+        rating: 4.5,
+        reviews: 127,
+        description: "رحلة عبر الطبيعة والحياة البرية",
+        emoji: "🦁"
+      },
+      {
+        id: 9,
+        title: "كبرياء وتحامل",
+        author: "جين أوستن",
+        category: "fiction",
+        price: 38.99,
+        rating: 4.6,
+        reviews: 278,
+        description: "رومانسية كلاسيكية خالدة",
+        emoji: "💑"
+      },
+      {
+        id: 10,
+        title: "نابليون بونابرت",
+        author: "أندرو روبرتس",
+        category: "history",
+        price: 62.99,
+        rating: 4.7,
+        reviews: 112,
+        description: "سيرة حياة الإمبراطور الفرنسي",
+        emoji: "👑"
+      },
+      {
+        id: 11,
+        title: "تفكير سريع وبطيء",
+        author: "دانيال كاهنمان",
+        category: "psychology",
+        price: 54.99,
+        rating: 4.6,
+        reviews: 289,
+        description: "استكشاف طرق تفكير الإنسان",
+        emoji: "⚡"
+      },
+      {
+        id: 12,
+        title: "ثورة الذكاء الاصطناعي",
+        author: "إريك براتجويمان",
+        category: "science",
+        price: 56.99,
+        rating: 4.4,
+        reviews: 156,
+        description: "مستقبل الذكاء الاصطناعي وتأثيره",
+        emoji: "🤖"
+      }
+    ];
+
+    // Global Variables
+    let cart = [];
+    let currentUser = null;
+    let allBooks = [...booksDatabase];
+    let filteredBooks = [...booksDatabase];
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      loadFromLocalStorage();
+      displayBooks(allBooks.slice(0, 6), 'featured-container');
+      displayBooks(allBooks, 'books-container');
+      updateCartUI();
+      checkUserStatus();
+
+      // Login Form
+      document.getElementById('loginForm').addEventListener('submit', handleLogin);
+      document.getElementById('registerForm').addEventListener('submit', handleRegister);
+    });
+
+    // Navigation
+    function showSection(sectionId) {
+      // Hide all sections
+      document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+      });
+
+      // Show selected section
+      document.getElementById(sectionId).classList.add('active');
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    // Display Books
+    function displayBooks(books, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      if (books.length === 0) {
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">لم يتم العثور على كتب</p>';
+        return;
+      }
+
+      books.forEach(book => {
+        const bookCard = createBookCard(book);
+        container.appendChild(bookCard);
+      });
+    }
+
+    // Create Book Card
+    function createBookCard(book) {
+      const card = document.createElement('div');
+      card.className = 'book-card';
+      card.innerHTML = `
+        <div class="book-cover">${book.emoji}</div>
+        <div class="book-info">
+          <h3 class="book-title">${book.title}</h3>
+          <p class="book-author">للمؤلف: ${book.author}</p>
+          <span class="book-category">${getCategoryName(book.category)}</span>
+          <div class="book-rating">⭐ ${book.rating} (${book.reviews} تقييم)</div>
+          <div class="book-price">${book.price} ريال</div>
+          <p class="book-description">${book.description}</p>
+          <div class="book-actions">
+            <button class="btn btn-primary" onclick="addToCart(${book.id})">أضف للسلة</button>
+            <button class="btn btn-secondary" onclick="viewDetails(${book.id})">التفاصيل</button>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    // Get Category Name
+    function getCategoryName(category) {
+      const categories = {
+        fiction: 'روايات',
+        science: 'العلوم',
+        history: 'التاريخ',
+        psychology: 'علم النفس',
+        education: 'التعليم'
+      };
+      return categories[category] || category;
+    }
+
+    // Search and Filter
+    function filterBooks() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const selectedCategory = document.getElementById('categoryFilter').value;
+
+      filteredBooks = allBooks.filter(book => {
+        const matchesSearch = book.title.toLowerCase().includes(searchTerm) ||
+                             book.author.toLowerCase().includes(searchTerm);
+        const matchesCategory = !selectedCategory || book.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+      });
+
+      displayBooks(filteredBooks, 'books-container');
+    }
+
+    // Sort Books
+    function sortBooks() {
+      const sortOption = document.getElementById('sortFilter').value;
+      let sortedBooks = [...filteredBooks];
+
+      switch(sortOption) {
+        case 'price-low':
+          sortedBooks.sort((a, b) => a.price - b.price);
+          break;
+        case 'price-high':
+          sortedBooks.sort((a, b) => b.price - a.price);
+          break;
+        case 'rating':
+          sortedBooks.sort((a, b) => b.rating - a.rating);
+          break;
+        case 'name':
+        default:
+          sortedBooks.sort((a, b) => a.title.localeCompare(b.title, 'ar'));
+      }
+
+      displayBooks(sortedBooks, 'books-container');
+    }
+
+    // Shopping Cart Functions
+    function addToCart(bookId) {
+      const book = allBooks.find(b => b.id === bookId);
+      if (!book) return;
+
+      const existingItem = cart.find(item => item.id === bookId);
+
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: book.id,
+          title: book.title,
+          price: book.price,
+          quantity: 1
+        });
+      }
+
+      updateCartUI();
+      saveToLocalStorage();
+      showNotification(`تم إضافة "${book.title}" إلى السلة`);
+    }
+
+    function updateCartUI() {
+      const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById('cart-count').textContent = cartCount;
+
+      const cartItemsContainer = document.getElementById('cart-items');
+      const emptyCart = document.getElementById('empty-cart');
+      const cartSummary = document.getElementById('cart-summary');
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = '';
+        emptyCart.style.display = 'block';
+        cartSummary.style.display = 'none';
+        return;
+      }
+
+      emptyCart.style.display = 'none';
+      cartSummary.style.display = 'block';
+
+      cartItemsContainer.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <div class="cart-item-info">
+            <div class="cart-item-title">${item.title}</div>
+            <div class="cart-item-price">${item.price} ريال</div>
+          </div>
+          <div class="cart-item-actions">
+            <input type="number" min="1" value="${item.quantity}" class="quantity-input" 
+                   onchange="updateQuantity(${item.id}, this.value)">
+            <button class="remove-btn" onclick="removeFromCart(${item.id})">حذف</button>
+          </div>
+        </div>
+      `).join('');
+
+      updateCartTotals();
+    }
+
+    function updateQuantity(bookId, quantity) {
+      const item = cart.find(i => i.id === bookId);
+      if (item) {
+        item.quantity = parseInt(quantity) || 1;
+        updateCartUI();
+        saveToLocalStorage();
+      }
+    }
+
+    function removeFromCart(bookId) {
+      cart = cart.filter(item => item.id !== bookId);
+      updateCartUI();
+      saveToLocalStorage();
+    }
+
+    function updateCartTotals() {
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const tax = subtotal * 0.15;
+      const total = subtotal + tax;
+
+      document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+      document.getElementById('tax').textContent = tax.toFixed(2);
+      document.getElementById('total').textContent = total.toFixed(2);
+    }
+
+    function checkout() {
+      if (!currentUser) {
+        showLoginModal();
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.15;
+      const order = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString('ar-SA'),
+        items: [...cart],
+        total: total.toFixed(2)
+      };
+
+      if (!currentUser.orders) {
+        currentUser.orders = [];
+      }
+      currentUser.orders.push(order);
+
+      cart = [];
+      updateCartUI();
+      saveToLocalStorage();
+
+      showNotification(`تم الشراء بنجاح! المجموع: ${order.total} ريال`);
+      showSection('home');
+    }
+
+    // Login Modal
+    function showLoginModal() {
+      document.getElementById('loginModal').style.display = 'block';
+    }
+
+    function closeLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+      document.getElementById('loginForm').reset();
+      document.getElementById('registerForm').reset();
+      document.getElementById('registerForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    }
+
+    function toggleRegisterForm() {
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      
+      if (registerForm.style.display === 'none') {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+      } else {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      currentUser = {
+        username: username,
+        email: username + '@email.com',
+        orders: []
+      };
+
+      closeLoginModal();
+      updateNavigation();
+      showNotification(`مرحباً ${username}!`);
+      saveToLocalStorage();
+    }
+
+    function handleRegister(e) {
+      e.preventDefault();
+      const username = document.getElementById('newUsername').value;
+      const email = document.getElementById('newEmail').value;
+
+      currentUser = {
+        username: username,
+        email: email,
+        orders: []
+      };
+
+      closeLoginModal();
+      updateNavigation();
+      showNotification(`تم إنشاء حسابك بنجاح!`);
+      saveToLocalStorage();
+    }
+
+    function logout() {
+      currentUser = null;
+      updateNavigation();
+      showNotification('تم تسجيل الخروج');
+      saveToLocalStorage();
+      showSection('home');
+    }
+
+    function updateNavigation() {
+      const loginBtn = document.getElementById('login-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      const profileContent = document.getElementById('profile-content');
+      const profileLoginMessage = document.getElementById('profile-login-message');
+
+      if (currentUser) {
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'block';
+
+        if (profileContent) {
+          document.getElementById('profile-username').textContent = currentUser.username;
+          document.getElementById('profile-email').textContent = currentUser.email;
+
+          const ordersList = document.getElementById('orders-list');
+          if (currentUser.orders && currentUser.orders.length > 0) {
+            ordersList.innerHTML = currentUser.orders.map(order => `
+              <div class="order-item">
+                <p><strong>رقم الطلب:</strong> ${order.id}</p>
+                <p><strong>التاريخ:</strong> ${order.date}</p>
+                <p><strong>عدد العناصر:</strong> ${order.items.length}</p>
+                <p><strong>المجموع:</strong> ${order.total} ريال</p>
+              </div>
+            `).join('');
+          } else {
+            ordersList.innerHTML = '<p style="text-align: center; color: #999;">لا توجد طلبات سابقة</p>';
+          }
+
+          profileLoginMessage.style.display = 'none';
+          profileContent.style.display = 'block';
+        }
+      } else {
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+
+        if (profileContent) {
+          profileLoginMessage.style.display = 'block';
+          profileContent.style.display = 'none';
+        }
+      }
+    }
+
+    function checkUserStatus() {
+      updateNavigation();
+    }
+
+    // Local Storage
+    function saveToLocalStorage() {
+      localStorage.setItem('bookstoreCart', JSON.stringify(cart));
+      localStorage.setItem('bookstoreUser', JSON.stringify(currentUser));
+    }
+
+    function loadFromLocalStorage() {
+      const savedCart = localStorage.getItem('bookstoreCart');
+      const savedUser = localStorage.getItem('bookstoreUser');
+
+      if (savedCart) {
+        cart = JSON.parse(savedCart);
+      }
+
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+      }
+    }
+
+    // Notifications
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #10b981;
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        z-index: 300;
+        animation: slideIn 0.3s ease-in;
+      `;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+
+    // View Details
+    function viewDetails(bookId) {
+      const book = allBooks.find(b => b.id === bookId);
+      if (book) {
+        alert(`
+📚 ${book.title}
+المؤلف: ${book.author}
+السعر: ${book.price} ريال
+التقييم: ${book.rating}/5 (${book.reviews} تقييم)
+
+${book.description}
+
+انقر على "أضف للسلة" لإضافة الكتاب`);
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('loginModal');
+      if (event.target === modal) {
+        closeLoginModal();
+      }
+    }
+  </script>
+</body>
+</html>
